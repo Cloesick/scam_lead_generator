@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/demo/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/demo",
+      "destination": "/demo/index.html",
+      "permanent": false
+    }
+  ]
+}

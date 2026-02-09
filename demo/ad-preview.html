@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carter Langfold - Ad Campaign Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a1a2e;
+            --primary-charcoal: #2d2d44;
+            --accent-gold: #d4a853;
+            --white: #ffffff;
+            --off-white: #f5f5f5;
+            --muted-grey: #6c6c6c;
+            --google-blue: #1a73e8;
+            --google-green: #137333;
+            --fb-blue: #1877f2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .demo-header {
+            background: var(--primary-dark);
+            color: var(--white);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 12px;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .demo-header .gold {
+            color: var(--accent-gold);
+        }
+
+        .demo-header p {
+            color: var(--off-white);
+            font-size: 1.1rem;
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        /* Section headers */
+        .section-header {
+            background: var(--primary-charcoal);
+            color: var(--white);
+            padding: 20px 30px;
+            border-radius: 8px 8px 0 0;
+            margin-top: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header .icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .section-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Google Ads Mockup */
+        .google-ad {
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            max-width: 600px;
+            background: #fff;
+        }
+
+        .google-ad-label {
+            font-size: 12px;
+            color: var(--muted-grey);
+            margin-bottom: 4px;
+        }
+
+        .google-ad-label strong {
+            background: #000;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 8px;
+        }
+
+        .google-ad-url {
+            color: var(--muted-grey);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .google-ad-headline {
+            color: var(--google-blue);
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+
+        .google-ad-headline:hover {
+            text-decoration: underline;
+        }
+
+        .google-ad-description {
+            color: #4d5156;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Meta/Facebook Ad Mockup */
+        .meta-ad {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 500px;
+            background: #fff;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .meta-ad-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            gap: 10px;
+        }
+
+        .meta-ad-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .meta-ad-page-info {
+            flex: 1;
+        }
+
+        .meta-ad-page-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .meta-ad-sponsored {
+            font-size: 12px;
+            color: var(--muted-grey);
+        }
+
+        .meta-ad-text {
+            padding: 0 16px 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .meta-ad-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-charcoal) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-align: center;
+            padding: 30px;
+            position: relative;
+        }
+
+        .meta-ad-image h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .meta-ad-image p {
+            color: var(--off-white);
+            font-size: 1rem;
+        }
+
+        .meta-ad-image .gold-accent {
+            color: var(--accent-gold);
+        }
+
+        .meta-ad-image .logo {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 12px;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .meta-ad-cta-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-top: 1px solid #ddd;
+            background: #f7f8fa;
+        }
+
+        .meta-ad-cta-text {
+            font-size: 12px;
+            color: var(--muted-grey);
+        }
+
+        .meta-ad-cta-text strong {
+            display: block;
+            color: #1c1e21;
+            font-size: 14px;
+        }
+
+        .meta-ad-cta-button {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        /* Instagram Story Mockup */
+        .story-mockup {
+            width: 280px;
+            height: 500px;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-charcoal) 100%);
+            border-radius: 24px;
+            padding: 20px;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .story-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+        }
+
+        .story-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .story-sponsored {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .story-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .story-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .story-content p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 20px;
+        }
+
+        .story-cta {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: auto;
+            margin-bottom: 30px;
+        }
+
+        .story-swipe {
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Carousel preview */
+        .carousel-container {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+
+        .carousel-card {
+            min-width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-charcoal) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .carousel-card .step {
+            color: var(--accent-gold);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .carousel-card h4 {
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+
+        /* Grid layout */
+        .ad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Notes */
+        .demo-notes {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .demo-notes h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .demo-notes ul {
+            margin-left: 20px;
+            color: #856404;
+        }
+
+        .demo-notes li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .demo-footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted-grey);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="demo-header">
+            <h1><span class="gold">Carter Langfold</span> Ad Campaign</h1>
+            <p>Spray Foam Removal — Lead Generation Campaign Proposal</p>
+            <div class="demo-badge">DEMO PREVIEW — FOR APPROVAL</div>
+        </div>
+
+        <!-- Google Ads Section -->
+        <div class="section-header">
+            <h2>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Google Search Ads
+            </h2>
+        </div>
+        <div class="section-content">
+            <p style="margin-bottom: 20px; color: var(--muted-grey);">These ads appear when users search for spray foam removal services on Google.</p>
+            
+            <!-- Google Ad 1 -->
+            <div class="google-ad">
+                <div class="google-ad-label"><strong>Ad</strong></div>
+                <div class="google-ad-url">https://www.carterlangfold.com › spray-foam-removal</div>
+                <div class="google-ad-headline">Spray Foam Removal Specialists | Safe & Professional | UK-Wide</div>
+                <div class="google-ad-description">Spray foam causing issues? We assess and remove safely. Book a call today. Professional spray foam removal for lofts and roofs. No obligation quote.</div>
+            </div>
+
+            <!-- Google Ad 2 -->
+            <div class="google-ad">
+                <div class="google-ad-label"><strong>Ad</strong></div>
+                <div class="google-ad-url">https://www.carterlangfold.com › spray-foam-removal</div>
+                <div class="google-ad-headline">Spray Foam Mortgage Issue? | Get a Professional Assessment | Carter Langfold</div>
+                <div class="google-ad-description">Spray foam insulation flagged by lender or surveyor? We can help with removal. Get your loft ready for valuation. Safe removal, photos and documentation.</div>
+            </div>
+        </div>
+
+        <!-- Meta/Facebook Ads Section -->
+        <div class="section-header">
+            <h2>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="18" cy="6" r="1.5" fill="currentColor"/>
+                </svg>
+                Facebook & Instagram Ads
+            </h2>
+        </div>
+        <div class="section-content">
+            <p style="margin-bottom: 30px; color: var(--muted-grey);">These ads appear in Facebook/Instagram feeds and stories, targeting homeowners in England, Wales & Northern Ireland.</p>
+            
+            <div class="ad-grid">
+                <!-- Facebook Feed Ad -->
+                <div>
+                    <h3 style="margin-bottom: 15px; font-size: 1rem; color: var(--muted-grey);">Facebook Feed Ad</h3>
+                    <div class="meta-ad">
+                        <div class="meta-ad-header">
+                            <div class="meta-ad-avatar">CL</div>
+                            <div class="meta-ad-page-info">
+                                <div class="meta-ad-page-name">Carter Langfold</div>
+                                <div class="meta-ad-sponsored">Sponsored · 🌐</div>
+                            </div>
+                        </div>
+                        <div class="meta-ad-text">
+                            Has spray foam insulation been flagged on your property?<br><br>
+                            It can affect valuations, mortgages, and sales. We specialise in safe, professional removal across England, Wales & Northern Ireland.<br><br>
+                            📞 Restore your mortgage eligibility — book a free assessment.
+                        </div>
+                        <div class="meta-ad-image">
+                            <h3>Spray Foam <span class="gold-accent">Removal</span></h3>
+                            <p>Safe • Professional • Documented</p>
+                            <div class="logo">CARTER LANGFOLD</div>
+                        </div>
+                        <div class="meta-ad-cta-bar">
+                            <div class="meta-ad-cta-text">
+                                carterlangfold.com
+                                <strong>Spray Foam Removal Specialists</strong>
+                            </div>
+                            <a href="../landing/spray-foam/index.html?utm_source=meta&utm_medium=cpc&utm_campaign=spray_foam&utm_content=fb_feed#lead" class="meta-ad-cta-button">Restore My Mortgage Eligibility</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instagram Story Ad -->
+                <div>
+                    <h3 style="margin-bottom: 15px; font-size: 1rem; color: var(--muted-grey);">Instagram Story Ad</h3>
+                    <div class="story-mockup">
+                        <div class="story-header">
+                            <div class="story-avatar"></div>
+                            <div>
+                                <div class="story-name">Carter Langfold</div>
+                                <div class="story-sponsored">Sponsored</div>
+                            </div>
+                        </div>
+                        <div class="story-content">
+                            <h3>Is your loft spray foam causing <span style="color: var(--accent-gold);">issues?</span></h3>
+                            <p>We provide safe, professional removal with full documentation.</p>
+                        </div>
+                        <a class="story-cta" href="../landing/spray-foam/index.html?utm_source=meta&utm_medium=cpc&utm_campaign=spray_foam&utm_content=ig_story#lead" style="text-decoration: none;">Restore My Mortgage Eligibility</a>
+                        <div class="story-swipe">Swipe up to learn more</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Preview -->
+            <h3 style="margin: 40px 0 15px; font-size: 1rem; color: var(--muted-grey);">Carousel Ad (Process Explainer)</h3>
+            <div class="carousel-container">
+                <div class="carousel-card">
+                    <div class="step">STEP 1</div>
+                    <h4>Free Assessment</h4>
+                </div>
+                <div class="carousel-card">
+                    <div class="step">STEP 2</div>
+                    <h4>Safe Removal</h4>
+                </div>
+                <div class="carousel-card">
+                    <div class="step">STEP 3</div>
+                    <h4>Documentation</h4>
+                </div>
+                <div class="carousel-card">
+                    <div class="step">STEP 4</div>
+                    <h4>Ready for Valuation</h4>
+                </div>
+                <a class="carousel-card" href="../landing/spray-foam/index.html?utm_source=meta&utm_medium=cpc&utm_campaign=spray_foam&utm_content=carousel#lead" style="background: var(--accent-gold); color: var(--primary-dark); text-decoration: none;">
+                    <div class="step" style="color: var(--primary-dark);">GET STARTED</div>
+                    <h4>Restore My Mortgage Eligibility</h4>
+                </a>
+            </div>
+        </div>
+
+        <!-- Campaign Details -->
+        <div class="section-header">
+            <h2>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2"/>
+                    <path d="M21 12V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H16" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Campaign Overview
+            </h2>
+        </div>
+        <div class="section-content">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px 0; font-weight: 600; width: 200px;">Target Audience</td>
+                    <td style="padding: 12px 0;">Homeowners with spray foam insulation issues (valuation/mortgage concerns)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px 0; font-weight: 600;">Geographic Coverage</td>
+                    <td style="padding: 12px 0;">England, Wales, Northern Ireland (excluding Scotland)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px 0; font-weight: 600;">Platforms</td>
+                    <td style="padding: 12px 0;">Google Search, Facebook, Instagram</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px 0; font-weight: 600;">Primary Goal</td>
+                    <td style="padding: 12px 0;">Lead generation (assessment bookings / quote requests)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 0; font-weight: 600;">Conversion Tracking</td>
+                    <td style="padding: 12px 0;">GA4 + Google Ads + Meta Pixel (via GTM)</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Notes -->
+        <div class="demo-notes">
+            <h3>⚠️ Before Launch — Required Items</h3>
+            <ul>
+                <li><strong>Legal entity details</strong> — Company name, number, and registered address for site footer and ad account verification</li>
+                <li><strong>Landing page</strong> — Confirm or create dedicated spray foam removal page with clear CTA</li>
+                <li><strong>Real images/video</strong> — Before/after photos, team at work, or professional video content</li>
+                <li><strong>Privacy policy</strong> — Required for GDPR compliance and ad platform approval</li>
+                <li><strong>Tracking setup</strong> — GTM container with GA4, Google Ads conversion, and Meta Pixel</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="demo-footer">
+            <p>Demo prepared for Carter Langfold — February 2026</p>
+            <p style="margin-top: 10px;">This is a preview only. Final ads will be created after approval.</p>
+            <p style="margin-top: 10px;">Developed by <a href="https://saspire.org/" target="_blank" rel="noreferrer" style="color: inherit; text-decoration: underline;">Saspire</a></p>
+            <p style="margin-top: 10px;">© 2026 Carter Langfold. All Rights Reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
