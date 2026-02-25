@@ -2,7 +2,7 @@
 
 **Prepared for:** Carter Langfold
 **Date:** 25 February 2026
-**Version:** 1.0
+**Version:** 2.0
 
 ---
 
@@ -42,7 +42,7 @@ Your team gets an email and/or Slack alert
 You call them back to arrange an assessment
 ```
 
-**Scotland is excluded.** The system automatically detects Scottish postcodes and blocks submissions from Scotland, showing a clear message: *"Sorry — we currently only serve England, Wales & Northern Ireland."*
+**Scotland is excluded.** The system automatically detects Scottish postcodes **and Scottish landline phone numbers** and blocks submissions from Scotland, showing clear warning messages in real time as the user types.
 
 ---
 
@@ -100,7 +100,7 @@ After the interactive assessment, the user is asked to fill in a detailed form. 
 - Preferred contact method (phone, email, no preference)
 - How they heard about you (Facebook, Instagram, Google, friend, leaflet, news, other)
 
-### 3. Error Handling
+### 3. Error Handling & Validation
 
 The forms are designed to be easy to use, even for people who aren't comfortable with technology:
 
@@ -110,8 +110,34 @@ The forms are designed to be easy to use, even for people who aren't comfortable
 - **Errors disappear as soon as the user fixes them** — no need to re-submit to clear the red
 - **A count is shown** — e.g. *"Please fix the 3 highlighted fields above"*
 - **Scotland postcodes are caught in real time** — a warning appears as they type, before they even try to submit
+- **Scottish landline phone numbers are caught in real time** — over 170 Scottish area codes (Edinburgh 0131, Glasgow 0141, Aberdeen 01224, Dundee 01382, Inverness 01463, etc.) are detected as the user types, with an instant warning: *"This appears to be a Scottish phone number. We only serve England, Wales & Northern Ireland."*
+- **UK-only phone validation** — only numbers starting with `0` or `+44` are accepted; international numbers are rejected
 
-### 4. Social Media Content (39 Posts)
+### 4. Back / Forth Navigation
+
+All 5 assessment tools now include back buttons so users can correct information without starting over:
+
+| Tool | Navigation Available |
+|------|---------------------|
+| **Health Check** (canvablog1) | ← Back to Health Check (from lead form to quiz result) |
+| **Claim Checker** (canvablog2) | ← Back to Checklist (from lead form to checklist result) |
+| **Damp Assessment** (canvablog3) | ← Previous Question (between quiz steps), ← Retake Quiz (from result to restart), ← Back to Result (from lead form) |
+| **Eligibility Checker** (canvablog4) | ← Change Scheme (from follow-up to scheme selector), ← Change Answers (from result to follow-up), ← Back to Result (from lead form) |
+| **Value Calculator** (canvablog5) | ← Change Calculator Inputs (from result to calculator), ← Back to Result (from lead form) |
+
+All back buttons use smooth scrolling to return the user to the correct section. Form data is preserved when navigating back (except quiz retake, which resets the quiz).
+
+### 5. Automated Demo Showcase
+
+A visual demo page (`demo-showcase.html`) that automatically walks through all 5 assessment tools in sequence:
+
+- **Auto-fills every field** with realistic test data, one at a time
+- **Auto-scrolls the widget** to keep focus on whichever field is currently being filled
+- **Shows step-by-step progress** with colour-coded status indicators
+- **Pauses between each action** so viewers can follow along
+- Useful for client presentations, QA testing, and stakeholder demos
+
+### 6. Social Media Content (39 Posts)
 
 We've created ready-to-use content for 5 platforms:
 
@@ -132,7 +158,7 @@ Each post has a different **content angle** to appeal to different people:
 - *"Time is running out"* — urgency-driven
 - *"Your free insulation could be destroying your home"* — targeting government scheme recipients
 
-### 5. Landing Page
+### 7. Landing Page
 
 A dedicated web page for the insulation claims campaign. This is where social media ads can link to. It includes:
 
@@ -143,7 +169,7 @@ A dedicated web page for the insulation claims campaign. This is where social me
 - Mobile-friendly design
 - Works on all browsers
 
-### 6. Automation System (Make.com)
+### 8. Automation System (Make.com)
 
 We've designed a complete automation system using Make.com (an online automation tool, similar to Zapier). When set up, it will:
 
@@ -213,6 +239,7 @@ Inside the `scam_lead_generator/` folder:
 
 | File | What It Is |
 |------|-----------|
+| `demo-showcase.html` | Automated visual demo of all 5 assessment tools |
 | `invoice.html` | The project invoice |
 | `vercel.json` | Configuration for website hosting (technical) |
 
@@ -222,7 +249,9 @@ Inside the `scam_lead_generator/` folder:
 
 The system is configured to serve **England, Wales, and Northern Ireland only**.
 
-Every form automatically checks the postcode when the user types it. If the postcode starts with any of the following prefixes, it is identified as Scottish and the submission is blocked:
+Every form automatically checks **both postcode and phone number** when the user types.
+
+**Postcode blocking** — If the postcode starts with any of the following prefixes, it is identified as Scottish and the submission is blocked:
 
 > AB, DD, DG, EH, FK, G, HS, IV, KA, KW, KY, ML, PA, PH, TD, ZE
 
@@ -230,6 +259,16 @@ When a Scottish postcode is detected:
 1. A red warning box appears immediately below the postcode field: *"Sorry — we currently only serve England, Wales & Northern Ireland. Scotland is not covered."*
 2. If they try to submit anyway, the form refuses and shows an error message
 3. No data is sent — the lead is not captured
+
+**Scottish landline phone blocking** — Over 170 Scottish landline area codes are checked in real time, including:
+- Edinburgh (0131), Glasgow (0141), Aberdeen (01224), Dundee (01382)
+- Inverness (01463), Perth (01738), Stirling (01786), Dumfries (01387)
+- Plus all rural Scottish area codes (01xxx through 019xxxx ranges)
+
+When a Scottish phone number is detected:
+1. A red warning box appears below the phone field: *"This appears to be a Scottish phone number. We only serve England, Wales & Northern Ireland."*
+2. Submission is blocked if the warning is still showing
+3. Scottish **mobile** numbers are NOT blocked (mobile numbers are national, not regional)
 
 This happens across all 5 assessment tools and the landing page.
 
@@ -339,6 +378,8 @@ Check your Google Sheet "Leads" tab regularly. Update the `lead_status` column a
 | Countries served | England, Wales, Northern Ireland |
 | Country excluded | Scotland |
 | Scottish postcode prefixes blocked | 16 |
+| Scottish landline area codes blocked | 170+ |
+| Back navigation buttons added | 10 (across all 5 tools) |
 
 ---
 
@@ -378,4 +419,4 @@ If you need help with any of the following, please get in touch:
 
 ---
 
-*This document was prepared on 25 February 2026 as part of the Insulation Claims Campaign project (ref: CL-INSULATION-2026).*
+*This document was prepared on 25 February 2026 (updated v2.0: 25 February 2026) as part of the Insulation Claims Campaign project (ref: CL-INSULATION-2026).*
