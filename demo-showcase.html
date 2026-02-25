@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canva Blog Widgets — Automated Demo Showcase</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Arial,sans-serif}
+  body{background:#0f172a;color:#e2e8f0;min-height:100vh}
+
+  /* Top bar */
+  .topbar{background:#1e293b;border-bottom:1px solid #334155;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+  .topbar h1{font-size:16px;font-weight:700;color:#f8fafc;letter-spacing:-.3px}
+  .topbar h1 span{color:#3b82f6}
+  .controls{display:flex;align-items:center;gap:12px}
+  .controls select{background:#334155;color:#e2e8f0;border:1px solid #475569;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer}
+  .controls select:focus{outline:none;border-color:#3b82f6}
+  .cbtn{padding:7px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+  .cbtn.primary{background:#3b82f6;color:#fff}.cbtn.primary:hover{background:#2563eb}
+  .cbtn.primary:disabled{opacity:.4;cursor:not-allowed}
+  .cbtn.danger{background:#dc2626;color:#fff}.cbtn.danger:hover{background:#b91c1c}
+  .cbtn.outline{background:transparent;color:#94a3b8;border:1px solid #475569}.cbtn.outline:hover{color:#f8fafc;border-color:#64748b}
+  .speed-lbl{font-size:12px;color:#64748b}
+
+  /* Layout */
+  .main{display:flex;height:calc(100vh - 53px)}
+  .sidebar{width:280px;background:#1e293b;border-right:1px solid #334155;overflow-y:auto;flex-shrink:0}
+  .viewer{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+  /* Widget cards in sidebar */
+  .wcard{padding:14px 16px;border-bottom:1px solid #334155;cursor:pointer;transition:background .15s}
+  .wcard:hover{background:#334155}
+  .wcard.active{background:#1e3a5f;border-left:3px solid #3b82f6}
+  .wcard .wnum{font-size:11px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:.5px}
+  .wcard .wname{font-size:14px;font-weight:600;color:#f1f5f9;margin:3px 0 2px}
+  .wcard .wdesc{font-size:12px;color:#94a3b8;line-height:1.4}
+  .wcard .wtags{margin-top:6px;display:flex;gap:5px;flex-wrap:wrap}
+  .wcard .tag{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600}
+  .tag.quiz{background:rgba(59,130,246,.15);color:#60a5fa}
+  .tag.form{background:rgba(34,197,94,.15);color:#4ade80}
+  .tag.calc{background:rgba(245,158,11,.15);color:#fbbf24}
+
+  /* Iframe area */
+  .iframe-wrap{flex:1;position:relative;background:#1e293b}
+  .iframe-wrap iframe{width:100%;height:100%;border:none;border-radius:0}
+
+  /* Log panel */
+  .log-panel{height:180px;background:#0f172a;border-top:1px solid #334155;overflow-y:auto;padding:10px 16px;flex-shrink:0}
+  .log-panel .log-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .log-panel .log-hdr h3{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  .log-entry{font-size:12px;padding:3px 0;line-height:1.5;font-family:'Cascadia Code','Fira Code',monospace;border-bottom:1px solid rgba(51,65,85,.3)}
+  .log-entry .lt{color:#64748b;margin-right:8px}
+  .log-entry.step{color:#60a5fa}
+  .log-entry.action{color:#4ade80}
+  .log-entry.result{color:#fbbf24}
+  .log-entry.error{color:#f87171}
+  .log-entry.info{color:#94a3b8}
+  .log-entry.success{color:#34d399}
+
+  /* Progress bar */
+  .prog-bar{height:3px;background:#334155;position:relative}
+  .prog-bar .prog-fill{height:100%;background:#3b82f6;transition:width .3s ease;width:0}
+
+  /* Status badge */
+  .status-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px}
+  .status-badge.idle{background:#334155;color:#94a3b8}
+  .status-badge.running{background:rgba(59,130,246,.15);color:#60a5fa}
+  .status-badge.done{background:rgba(34,197,94,.15);color:#4ade80}
+  .status-badge.paused{background:rgba(245,158,11,.15);color:#fbbf24}
+  .status-badge .dot{width:6px;height:6px;border-radius:50%}
+  .status-badge.idle .dot{background:#94a3b8}
+  .status-badge.running .dot{background:#60a5fa;animation:pulse 1s infinite}
+  .status-badge.done .dot{background:#4ade80}
+  .status-badge.paused .dot{background:#fbbf24}
+
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  @media(max-width:800px){.sidebar{display:none}.main{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1><span>&#9654;</span> Canva Blog — Automated Demo</h1>
+  <div class="controls">
+    <div id="statusBadge" class="status-badge idle"><span class="dot"></span><span id="statusText">Idle</span></div>
+    <label class="speed-lbl">Speed:</label>
+    <select id="speedSel">
+      <option value="1500">Normal</option>
+      <option value="800">Fast</option>
+      <option value="3000">Slow</option>
+    </select>
+    <button class="cbtn primary" id="btnRun">&#9654; Run Demo</button>
+    <button class="cbtn outline" id="btnStop" disabled>&#9632; Stop</button>
+    <button class="cbtn outline" id="btnRunAll">Run All (sequence)</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="viewer">
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="iframe-wrap"><iframe id="widgetFrame" src="about:blank"></iframe></div>
+    <div class="log-panel">
+      <div class="log-hdr">
+        <h3>Demo Log</h3>
+        <button class="cbtn outline" style="padding:3px 8px;font-size:11px" id="btnClearLog">Clear</button>
+      </div>
+      <div id="logBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ── Widget definitions ── */
+  var widgets = [
+    {
+      id:'canvablog1', file:'canvablog1.html',
+      name:'Home Insulation Health Check',
+      desc:'3-question risk check with property age, spray foam presence, and remortgage intent.',
+      tags:[{t:'Quiz',c:'quiz'},{t:'Form',c:'form'}],
+      steps:[
+        {type:'step', msg:'Starting Home Insulation Health Check demo'},
+        {type:'action', msg:'Selecting property age: "1950-1990"', fn:function(w){setSel(w,'hc-age','1950-1990')}},
+        {type:'action', msg:'Ticking "Spray foam present in loft"', fn:function(w){setCheck(w,'hc-foam',true)}},
+        {type:'result', msg:'Result should show PROFESSIONAL ASSESSMENT RECOMMENDED (maintenance risk)'},
+        {type:'action', msg:'Ticking "Planning to sell or remortgage"', fn:function(w){setCheck(w,'hc-remort',true)}},
+        {type:'result', msg:'Result upgrades to PROPERTY AT RISK (urgent risk)'},
+        {type:'action', msg:'Clicking "Request Professional Technical Report"', fn:function(w){click(w,'hcCta')}},
+        {type:'step', msg:'Lead form is now visible — filling in test data'},
+        {type:'action', msg:'Entering name: "Jane Smith"', fn:function(w){setVal(w,'lf-name','Jane Smith')}},
+        {type:'action', msg:'Entering phone: "07700 900123"', fn:function(w){setVal(w,'lf-phone','07700 900123')}},
+        {type:'action', msg:'Entering email: "jane@example.com"', fn:function(w){setVal(w,'lf-email','jane@example.com')}},
+        {type:'action', msg:'Entering address: "14 Oak Lane"', fn:function(w){setVal(w,'lf-addr','14 Oak Lane')}},
+        {type:'action', msg:'Entering postcode: "B1 1BB" (Birmingham — valid)', fn:function(w){setVal(w,'lf-pc','B1 1BB')}},
+        {type:'action', msg:'Selecting property type: Semi-detached', fn:function(w){setSel(w,'lf-ptype','semi')}},
+        {type:'action', msg:'Selecting foam location: Loft — underside', fn:function(w){setSel(w,'lf-floc','loft_underside')}},
+        {type:'action', msg:'Selecting install year: 3–5 years ago', fn:function(w){setSel(w,'lf-iyear','3-5')}},
+        {type:'action', msg:'Selecting installer: Energy company / scheme', fn:function(w){setSel(w,'lf-inst','energy_co')}},
+        {type:'action', msg:'Selecting surveyor: No survey done', fn:function(w){setSel(w,'lf-surv','no')}},
+        {type:'action', msg:'Ticking issues: Damp, Mould, Mortgage blocked', fn:function(w){setCheck(w,'i1',true);setCheck(w,'i4',true);setCheck(w,'i5',true)}},
+        {type:'action', msg:'Selecting ownership: Owner-occupier', fn:function(w){setSel(w,'lf-own','owner_occupier')}},
+        {type:'action', msg:'Selecting urgency: Urgent — sale in progress', fn:function(w){setSel(w,'lf-urg','urgent_sale')}},
+        {type:'action', msg:'Selecting contact: Phone', fn:function(w){setSel(w,'lf-contact','phone')}},
+        {type:'action', msg:'Selecting source: Facebook', fn:function(w){setSel(w,'lf-src','facebook')}},
+        {type:'action', msg:'Submitting form', fn:function(w){clickBtn(w,'leadBtn')}},
+        {type:'success', msg:'Form submitted — toast confirmation shown. Lead logged to console.'},
+        // Scotland demo
+        {type:'step', msg:'Now demonstrating Scotland postcode blocking'},
+        {type:'action', msg:'Entering Scottish postcode: "EH1 1AA" (Edinburgh)', fn:function(w){setVal(w,'lf-pc','EH1 1AA')}},
+        {type:'result', msg:'Scotland warning banner is now visible below postcode field'},
+        {type:'action', msg:'Clearing postcode back to valid area', fn:function(w){setVal(w,'lf-pc','B1 1BB')}},
+        {type:'success', msg:'Canvablog 1 demo complete'},
+      ]
+    },
+    {
+      id:'canvablog2', file:'canvablog2.html',
+      name:'Cavity Wall Claim Checker',
+      desc:'8-point checklist to assess claim strength — low, possible, or strong.',
+      tags:[{t:'Checklist',c:'quiz'},{t:'Form',c:'form'}],
+      steps:[
+        {type:'step', msg:'Starting Cavity Wall Claim Checker demo'},
+        {type:'action', msg:'Ticking checklist item 1: "Cavity wall insulation installed"', fn:function(w){clickLi(w,0)}},
+        {type:'action', msg:'Ticking item 2: "Free or subsidised"', fn:function(w){clickLi(w,1)}},
+        {type:'result', msg:'Claim strength: EARLY INDICATORS shown (1–2 ticks)'},
+        {type:'action', msg:'Ticking item 3: "Installed within last 15 years"', fn:function(w){clickLi(w,2)}},
+        {type:'action', msg:'Ticking item 4: "Damp patches"', fn:function(w){clickLi(w,3)}},
+        {type:'action', msg:'Ticking item 5: "Mould on walls"', fn:function(w){clickLi(w,4)}},
+        {type:'result', msg:'Claim strength upgrades to POSSIBLE CLAIM (3–5 ticks)'},
+        {type:'action', msg:'Ticking item 6: "Colder than before"', fn:function(w){clickLi(w,5)}},
+        {type:'action', msg:'Ticking item 7: "Render cracking"', fn:function(w){clickLi(w,6)}},
+        {type:'action', msg:'Ticking item 8: "No survey done"', fn:function(w){clickLi(w,7)}},
+        {type:'result', msg:'Claim strength: STRONG POTENTIAL CLAIM (6+ ticks) — £10k–£50k+'},
+        {type:'action', msg:'Clicking "Get My Free Claim Assessment"', fn:function(w){click(w,'cta')}},
+        {type:'step', msg:'Lead form visible — demonstrating validation errors'},
+        {type:'action', msg:'Submitting empty form to show validation', fn:function(w){clickBtn(w,'leadBtn')}},
+        {type:'error', msg:'Validation errors displayed — all required fields highlighted in red'},
+        {type:'step', msg:'Now filling each field with valid data to clear errors'},
+        {type:'action', msg:'Entering name: "Sarah Johnson"', fn:function(w){setVal(w,'lf-name','Sarah Johnson')}},
+        {type:'action', msg:'Entering phone: "07700 123456"', fn:function(w){setVal(w,'lf-phone','07700 123456')}},
+        {type:'action', msg:'Entering email: "sarah.j@example.com"', fn:function(w){setVal(w,'lf-email','sarah.j@example.com')}},
+        {type:'action', msg:'Entering address: "28 Elm Street"', fn:function(w){setVal(w,'lf-addr','28 Elm Street')}},
+        {type:'action', msg:'Entering postcode: "B15 2TT" (Birmingham)', fn:function(w){setVal(w,'lf-pc','B15 2TT')}},
+        {type:'action', msg:'Selecting property type: Semi-detached', fn:function(w){setSel(w,'lf-ptype','semi')}},
+        {type:'action', msg:'Selecting insulation location: Cavity walls', fn:function(w){setSel(w,'lf-floc','cavity_walls')}},
+        {type:'action', msg:'Selecting install year: 5–10 years ago', fn:function(w){setSel(w,'lf-iyear','5-10')}},
+        {type:'action', msg:'Selecting installer: Energy company / scheme', fn:function(w){setSel(w,'lf-inst','energy_co')}},
+        {type:'action', msg:'Selecting surveyor: No survey done', fn:function(w){setSel(w,'lf-surv','no')}},
+        {type:'action', msg:'Ticking issues: Mortgage blocked, Damp, Mould, Cold spots', fn:function(w){setCheck(w,'i1',true);setCheck(w,'i4',true);setCheck(w,'i5',true);setCheck(w,'i7',true)}},
+        {type:'action', msg:'Selecting ownership: Owner-occupier', fn:function(w){setSel(w,'lf-own','owner_occupier')}},
+        {type:'action', msg:'Selecting urgency: Soon — next 6 months', fn:function(w){setSel(w,'lf-urg','soon')}},
+        {type:'action', msg:'Selecting contact: Phone', fn:function(w){setSel(w,'lf-contact','phone')}},
+        {type:'action', msg:'Selecting source: Facebook', fn:function(w){setSel(w,'lf-src','facebook')}},
+        {type:'action', msg:'Submitting completed form', fn:function(w){clickBtn(w,'leadBtn')}},
+        {type:'success', msg:'Canvablog 2 demo complete'},
+      ]
+    },
+    {
+      id:'canvablog3', file:'canvablog3.html',
+      name:'Damp & Mould Damage Assessment',
+      desc:'5-question severity quiz with score meter from Minor to Critical.',
+      tags:[{t:'Quiz',c:'quiz'},{t:'Severity',c:'calc'},{t:'Form',c:'form'}],
+      steps:[
+        {type:'step', msg:'Starting Damp & Mould Damage Assessment demo'},
+        {type:'action', msg:'Q1: Selecting "Multiple rooms throughout the house"', fn:function(w){clickQuizOption(w,2)}},
+        {type:'action', msg:'Q2: Selecting "1 to 3 years ago"', fn:function(w){clickQuizOption(w,2)}},
+        {type:'action', msg:'Q3: Selecting "Large areas of black mould"', fn:function(w){clickQuizOption(w,2)}},
+        {type:'action', msg:'Q4: Selecting "Yes — free or subsidised (energy co / scheme)"', fn:function(w){clickQuizOption(w,2)}},
+        {type:'action', msg:'Q5: Selecting "Noticeably worse each year"', fn:function(w){clickQuizOption(w,2)}},
+        {type:'result', msg:'Severity score displayed with colour-coded meter (Critical level)'},
+        {type:'action', msg:'Clicking "Get a Free Professional Assessment"', fn:function(w){click(w,'cta')}},
+        {type:'step', msg:'Lead form visible — filling with valid data'},
+        {type:'action', msg:'Entering name: "Sarah Johnson"', fn:function(w){setVal(w,'lf-name','Sarah Johnson')}},
+        {type:'action', msg:'Entering phone: "07700 123456"', fn:function(w){setVal(w,'lf-phone','07700 123456')}},
+        {type:'action', msg:'Entering email: "sarah.j@example.com"', fn:function(w){setVal(w,'lf-email','sarah.j@example.com')}},
+        {type:'action', msg:'Entering address: "28 Elm Street"', fn:function(w){setVal(w,'lf-addr','28 Elm Street')}},
+        {type:'action', msg:'Entering postcode: "B15 2TT" (Birmingham)', fn:function(w){setVal(w,'lf-pc','B15 2TT')}},
+        {type:'action', msg:'Selecting property type: Semi-detached', fn:function(w){setSel(w,'lf-ptype','semi')}},
+        {type:'action', msg:'Selecting insulation location: Cavity walls', fn:function(w){setSel(w,'lf-floc','cavity_walls')}},
+        {type:'action', msg:'Selecting install year: 5\u201310 years ago', fn:function(w){setSel(w,'lf-iyear','5-10')}},
+        {type:'action', msg:'Selecting installer: Energy company / scheme', fn:function(w){setSel(w,'lf-inst','energy_co')}},
+        {type:'action', msg:'Selecting surveyor: No survey done', fn:function(w){setSel(w,'lf-surv','no')}},
+        {type:'action', msg:'Ticking issues: Mortgage blocked, Damp, Mould, Cold spots', fn:function(w){setCheck(w,'i1',true);setCheck(w,'i4',true);setCheck(w,'i5',true);setCheck(w,'i7',true)}},
+        {type:'action', msg:'Selecting ownership: Owner-occupier', fn:function(w){setSel(w,'lf-own','owner_occupier')}},
+        {type:'action', msg:'Selecting urgency: Soon \u2014 next 6 months', fn:function(w){setSel(w,'lf-urg','soon')}},
+        {type:'action', msg:'Selecting contact: Phone', fn:function(w){setSel(w,'lf-contact','phone')}},
+        {type:'action', msg:'Selecting source: Facebook', fn:function(w){setSel(w,'lf-src','facebook')}},
+        {type:'action', msg:'Submitting form', fn:function(w){clickBtn(w,'leadBtn')}},
+        {type:'success', msg:'Canvablog 3 demo complete'},
+      ]
+    },
+    {
+      id:'canvablog4', file:'canvablog4.html',
+      name:'Government Scheme Eligibility Checker',
+      desc:'Scheme selector + eligibility quiz. Shows likely/partial/ineligible result.',
+      tags:[{t:'Quiz',c:'quiz'},{t:'Eligibility',c:'calc'},{t:'Form',c:'form'}],
+      steps:[
+        {type:'step', msg:'Starting Government Scheme Eligibility Checker demo'},
+        {type:'action', msg:'Selecting scheme: "ECO Scheme"', fn:function(w){clickScheme(w,0)}},
+        {type:'step', msg:'Follow-up questions panel shown'},
+        {type:'action', msg:'Selecting insulation type: Cavity wall', fn:function(w){setSel(w,'insT','cavity_wall')}},
+        {type:'action', msg:'Selecting property type: Semi-detached', fn:function(w){setSel(w,'ptC','semi')}},
+        {type:'action', msg:'Ticking "Home has damp/mould/cold spots"', fn:function(w){setCheck(w,'hasDmg',true)}},
+        {type:'action', msg:'Ticking "No proper survey before install"', fn:function(w){setCheck(w,'noSurv',true)}},
+        {type:'action', msg:'Ticking "Installed within last 15 years"', fn:function(w){setCheck(w,'w15',true)}},
+        {type:'action', msg:'Clicking "Check My Eligibility"', fn:function(w){click(w,'chkBtn')}},
+        {type:'result', msg:'Result: LIKELY ELIGIBLE — STRONG CASE with claim range £15k–£50k+'},
+        {type:'action', msg:'Clicking "Get My Free Claim Assessment"', fn:function(w){click(w,'ctaBtn')}},
+        {type:'step', msg:'Lead form visible — filling with valid data'},
+        {type:'action', msg:'Entering name: "Sarah Johnson"', fn:function(w){setVal(w,'lf-name','Sarah Johnson')}},
+        {type:'action', msg:'Entering phone: "07700 123456"', fn:function(w){setVal(w,'lf-phone','07700 123456')}},
+        {type:'action', msg:'Entering email: "sarah.j@example.com"', fn:function(w){setVal(w,'lf-email','sarah.j@example.com')}},
+        {type:'action', msg:'Entering address: "28 Elm Street"', fn:function(w){setVal(w,'lf-addr','28 Elm Street')}},
+        {type:'action', msg:'Entering postcode: "B15 2TT" (Birmingham)', fn:function(w){setVal(w,'lf-pc','B15 2TT')}},
+        {type:'action', msg:'Selecting property type: Semi-detached', fn:function(w){setSel(w,'lf-ptype','semi')}},
+        {type:'action', msg:'Selecting insulation location: Cavity walls', fn:function(w){setSel(w,'lf-floc','cavity_walls')}},
+        {type:'action', msg:'Selecting install year: 5\u201310 years ago', fn:function(w){setSel(w,'lf-iyear','5-10')}},
+        {type:'action', msg:'Selecting installer: Energy company / scheme', fn:function(w){setSel(w,'lf-inst','energy_co')}},
+        {type:'action', msg:'Selecting surveyor: No survey done', fn:function(w){setSel(w,'lf-surv','no')}},
+        {type:'action', msg:'Ticking issues: Mortgage blocked, Damp, Mould, Cold spots', fn:function(w){setCheck(w,'i1',true);setCheck(w,'i4',true);setCheck(w,'i5',true);setCheck(w,'i7',true)}},
+        {type:'action', msg:'Selecting ownership: Owner-occupier', fn:function(w){setSel(w,'lf-own','owner_occupier')}},
+        {type:'action', msg:'Selecting urgency: Soon \u2014 next 6 months', fn:function(w){setSel(w,'lf-urg','soon')}},
+        {type:'action', msg:'Selecting contact: Phone', fn:function(w){setSel(w,'lf-contact','phone')}},
+        {type:'action', msg:'Selecting source: Facebook', fn:function(w){setSel(w,'lf-src','facebook')}},
+        {type:'action', msg:'Submitting form', fn:function(w){clickBtn(w,'leadBtn')}},
+        {type:'success', msg:'Canvablog 4 demo complete'},
+      ]
+    },
+    {
+      id:'canvablog5', file:'canvablog5.html',
+      name:'Property Value Impact Calculator',
+      desc:'Estimates devaluation, removal cost, repair cost, and potential claim value.',
+      tags:[{t:'Calculator',c:'calc'},{t:'Form',c:'form'}],
+      steps:[
+        {type:'step', msg:'Starting Property Value Impact Calculator demo'},
+        {type:'action', msg:'Selecting property value: £200k–£300k', fn:function(w){setSel(w,'pv','250000')}},
+        {type:'action', msg:'Selecting insulation type: Spray foam', fn:function(w){setSel(w,'cit','spray_foam')}},
+        {type:'action', msg:'Selecting property type: Detached', fn:function(w){setSel(w,'cpt','detached')}},
+        {type:'action', msg:'Setting severity slider to 4 (severe)', fn:function(w){setRange(w,'sev',4)}},
+        {type:'action', msg:'Clicking "Calculate Impact"', fn:function(w){click(w,'calcBtn')}},
+        {type:'result', msg:'Impact breakdown shown: devaluation, removal, repair costs, and potential claim'},
+        {type:'action', msg:'Clicking "Protect Your Property Value — Free Assessment"', fn:function(w){click(w,'ctaBtn')}},
+        {type:'step', msg:'Lead form visible — filling with valid data'},
+        {type:'action', msg:'Entering name: "Sarah Johnson"', fn:function(w){setVal(w,'lf-name','Sarah Johnson')}},
+        {type:'action', msg:'Entering phone: "07700 123456"', fn:function(w){setVal(w,'lf-phone','07700 123456')}},
+        {type:'action', msg:'Entering email: "sarah.j@example.com"', fn:function(w){setVal(w,'lf-email','sarah.j@example.com')}},
+        {type:'action', msg:'Entering address: "28 Elm Street"', fn:function(w){setVal(w,'lf-addr','28 Elm Street')}},
+        {type:'action', msg:'Entering postcode: "B15 2TT" (Birmingham)', fn:function(w){setVal(w,'lf-pc','B15 2TT')}},
+        {type:'action', msg:'Selecting property type: Semi-detached', fn:function(w){setSel(w,'lf-ptype','semi')}},
+        {type:'action', msg:'Selecting insulation location: Cavity walls', fn:function(w){setSel(w,'lf-floc','cavity_walls')}},
+        {type:'action', msg:'Selecting install year: 5\u201310 years ago', fn:function(w){setSel(w,'lf-iyear','5-10')}},
+        {type:'action', msg:'Selecting installer: Energy company / scheme', fn:function(w){setSel(w,'lf-inst','energy_co')}},
+        {type:'action', msg:'Selecting surveyor: No survey done', fn:function(w){setSel(w,'lf-surv','no')}},
+        {type:'action', msg:'Ticking issues: Mortgage blocked, Damp, Mould, Cold spots', fn:function(w){setCheck(w,'i1',true);setCheck(w,'i4',true);setCheck(w,'i5',true);setCheck(w,'i7',true)}},
+        {type:'action', msg:'Selecting ownership: Owner-occupier', fn:function(w){setSel(w,'lf-own','owner_occupier')}},
+        {type:'action', msg:'Selecting urgency: Soon \u2014 next 6 months', fn:function(w){setSel(w,'lf-urg','soon')}},
+        {type:'action', msg:'Selecting contact: Phone', fn:function(w){setSel(w,'lf-contact','phone')}},
+        {type:'action', msg:'Selecting source: Facebook', fn:function(w){setSel(w,'lf-src','facebook')}},
+        {type:'action', msg:'Submitting form', fn:function(w){clickBtn(w,'leadBtn')}},
+        {type:'success', msg:'Canvablog 5 demo complete'},
+      ]
+    }
+  ];
+
+  /* ── Iframe helpers ── */
+  function getDoc(){try{return document.getElementById('widgetFrame').contentDocument||document.getElementById('widgetFrame').contentWindow.document}catch(e){return null}}
+  function getWin(){try{return document.getElementById('widgetFrame').contentWindow}catch(e){return null}}
+
+  function scrollElIntoView(el){
+    if(!el)return;
+    try{el.scrollIntoView({behavior:'smooth',block:'center'})}catch(e){}
+  }
+  function setSel(w,id,v){
+    var d=getDoc();if(!d)return;
+    var el=d.getElementById(id);if(!el)return;
+    scrollElIntoView(el);
+    el.value=v;
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function setVal(w,id,v){
+    var d=getDoc();if(!d)return;
+    var el=d.getElementById(id);if(!el)return;
+    scrollElIntoView(el);
+    el.value='';el.focus();
+    // type character by character for visual effect (fast)
+    for(var i=0;i<v.length;i++){el.value+=v[i]}
+    el.dispatchEvent(new Event('input',{bubbles:true}));
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function setCheck(w,id,v){
+    var d=getDoc();if(!d)return;
+    var el=d.getElementById(id);if(!el)return;
+    scrollElIntoView(el);
+    el.checked=v;
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function click(w,id){
+    var d=getDoc();if(!d)return;
+    var el=d.getElementById(id);if(!el)return;
+    scrollElIntoView(el);
+    el.click();
+  }
+  function clickBtn(w,id){
+    var d=getDoc();if(!d)return;
+    var el=d.getElementById(id);if(!el)return;
+    scrollElIntoView(el);
+    el.click();
+  }
+  function clickLi(w,idx){
+    var d=getDoc();if(!d)return;
+    var items=d.querySelectorAll('#cl li');
+    if(items[idx]){
+      scrollElIntoView(items[idx]);
+      var cb=items[idx].querySelector('input');
+      if(cb){cb.checked=!cb.checked;cb.dispatchEvent(new Event('change',{bubbles:true}))}
+    }
+  }
+  function clickScheme(w,idx){
+    var d=getDoc();if(!d)return;
+    var cards=d.querySelectorAll('.sc');
+    if(cards[idx]){scrollElIntoView(cards[idx]);cards[idx].click();}
+  }
+  function clickQuizOption(w,optIdx){
+    var d=getDoc();if(!d)return;
+    var btns=d.querySelectorAll('.ob');
+    if(btns[optIdx]){scrollElIntoView(btns[optIdx]);btns[optIdx].click();}
+  }
+  function setRange(w,id,v){
+    var d=getDoc();if(!d)return;
+    var el=d.getElementById(id);if(!el)return;
+    scrollElIntoView(el);
+    el.value=v;
+    el.dispatchEvent(new Event('input',{bubbles:true}));
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function fillStandardForm(w){
+    var d=getDoc();if(!d)return;
+    var fns=[
+      function(){setVal(w,'lf-name','Sarah Johnson')},
+      function(){setVal(w,'lf-phone','07700 123456')},
+      function(){setVal(w,'lf-email','sarah.j@example.com')},
+      function(){setVal(w,'lf-addr','28 Elm Street')},
+      function(){setVal(w,'lf-pc','B15 2TT')},
+      function(){setSel(w,'lf-ptype','semi')},
+      function(){setSel(w,'lf-floc','cavity_walls')},
+      function(){setSel(w,'lf-iyear','5-10')},
+      function(){setSel(w,'lf-inst','energy_co')},
+      function(){setSel(w,'lf-surv','no')},
+      function(){setCheck(w,'i1',true);setCheck(w,'i4',true);setCheck(w,'i5',true);setCheck(w,'i7',true)},
+      function(){setSel(w,'lf-own','owner_occupier')},
+      function(){setSel(w,'lf-urg','soon')},
+      function(){setSel(w,'lf-contact','phone')},
+      function(){setSel(w,'lf-src','facebook')},
+    ];
+    fns.forEach(function(f){f()});
+  }
+
+  /* ── UI refs ── */
+  var sidebar=document.getElementById('sidebar');
+  var frame=document.getElementById('widgetFrame');
+  var logBody=document.getElementById('logBody');
+  var progFill=document.getElementById('progFill');
+  var btnRun=document.getElementById('btnRun');
+  var btnStop=document.getElementById('btnStop');
+  var btnRunAll=document.getElementById('btnRunAll');
+  var btnClearLog=document.getElementById('btnClearLog');
+  var speedSel=document.getElementById('speedSel');
+  var statusBadge=document.getElementById('statusBadge');
+  var statusText=document.getElementById('statusText');
+
+  var activeIdx=0, running=false, stopped=false, runAllMode=false;
+
+  /* ── Build sidebar ── */
+  widgets.forEach(function(w,i){
+    var div=document.createElement('div');
+    div.className='wcard'+(i===0?' active':'');
+    div.setAttribute('data-i',i);
+    var tagsHtml=w.tags.map(function(t){return '<span class="tag '+t.c+'">'+t.t+'</span>'}).join('');
+    div.innerHTML='<div class="wnum">Widget '+(i+1)+'</div><div class="wname">'+w.name+'</div><div class="wdesc">'+w.desc+'</div><div class="wtags">'+tagsHtml+'</div>';
+    div.onclick=function(){if(running)return;selectWidget(i)};
+    sidebar.appendChild(div);
+  });
+
+  function selectWidget(i){
+    activeIdx=i;
+    sidebar.querySelectorAll('.wcard').forEach(function(c,j){c.classList.toggle('active',j===i)});
+    frame.src=widgets[i].file;
+    progFill.style.width='0%';
+    log('info','Loaded: '+widgets[i].name+' ('+widgets[i].file+')');
+  }
+
+  function setStatus(s,t){statusBadge.className='status-badge '+s;statusText.textContent=t}
+
+  function log(type,msg){
+    var now=new Date();var ts=pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    var div=document.createElement('div');
+    div.className='log-entry '+type;
+    div.innerHTML='<span class="lt">['+ts+']</span>'+escHtml(msg);
+    logBody.appendChild(div);
+    logBody.scrollTop=logBody.scrollHeight;
+  }
+  function pad(n){return n<10?'0'+n:n}
+  function escHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+  btnClearLog.onclick=function(){logBody.innerHTML=''};
+
+  /* ── Run demo ── */
+  function getSpeed(){return parseInt(speedSel.value)||1500}
+
+  async function runDemo(widgetIdx){
+    var w=widgets[widgetIdx];
+    selectWidget(widgetIdx);
+    running=true;stopped=false;
+    btnRun.disabled=true;btnStop.disabled=false;
+    setStatus('running','Running: '+w.name);
+    log('step','═══ Demo: '+w.name+' ═══');
+
+    // Wait for iframe to load
+    await new Promise(function(r){frame.onload=r;if(frame.contentDocument&&frame.contentDocument.readyState==='complete')r()});
+    await sleep(500);
+
+    var steps=w.steps;
+    for(var i=0;i<steps.length;i++){
+      if(stopped)break;
+      var s=steps[i];
+      progFill.style.width=Math.round(((i+1)/steps.length)*100)+'%';
+      log(s.type,s.msg);
+      if(s.fn){
+        try{s.fn(w)}catch(e){log('error','Action error: '+e.message)}
+      }
+      await sleep(getSpeed());
+    }
+
+    if(!stopped){
+      progFill.style.width='100%';
+      setStatus('done','Done: '+w.name);
+      log('success','═══ '+w.name+' demo finished ═══');
+    }else{
+      setStatus('paused','Stopped');
+      log('info','Demo stopped by user');
+    }
+    running=false;
+    btnRun.disabled=false;btnStop.disabled=true;
+  }
+
+  async function runAllDemos(){
+    runAllMode=true;
+    for(var i=0;i<widgets.length;i++){
+      if(stopped){runAllMode=false;return}
+      await runDemo(i);
+      if(i<widgets.length-1&&!stopped){
+        log('info','Pausing 2s before next widget...');
+        await sleep(2000);
+      }
+    }
+    runAllMode=false;
+    if(!stopped){
+      setStatus('done','All demos complete');
+      log('success','═══ ALL 5 WIDGET DEMOS COMPLETE ═══');
+    }
+  }
+
+  btnRun.onclick=function(){if(!running)runDemo(activeIdx)};
+  btnStop.onclick=function(){stopped=true};
+  btnRunAll.onclick=function(){if(!running){stopped=false;runAllDemos()}};
+
+  function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+
+  // Load first widget
+  selectWidget(0);
+})();
+</script>
+</body>
+</html>

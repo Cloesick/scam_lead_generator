@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Insulation &amp; Mortgage Health Check</title>
+  <style>
+    * { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { background: linear-gradient(135deg, #011627 0%, #0f3460 50%, #16213e 100%); display: flex; align-items: center; justify-content: center; padding: 16px; min-height: 100%; }
+    .card { width: 100%; max-width: 620px; background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 8px 28px rgba(0,0,0,0.3); color: #222; }
+    .hdr { text-align: center; margin-bottom: 22px; }
+    .hdr h1 { font-size: 22px; font-weight: 700; color: #0f3460; margin-bottom: 8px; line-height: 1.3; }
+    .hdr p { font-size: 14px; color: #555; line-height: 1.5; }
+    .fg { margin-bottom: 16px; }
+    .fg label { display: block; font-size: 13px; font-weight: 600; color: #0f3460; margin-bottom: 6px; }
+    .fg select, .fg input[type="text"], .fg input[type="email"], .fg input[type="tel"] {
+      width: 100%; padding: 11px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; color: #222; background: #fff; outline: none; transition: border-color 0.2s;
+    }
+    .fg select:focus, .fg input:focus { border-color: #0f3460; box-shadow: 0 0 0 2px rgba(15,52,96,0.1); }
+    .cb { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 9px; }
+    .cb input[type="checkbox"] { width: 17px; height: 17px; margin-top: 2px; accent-color: #0f3460; flex-shrink: 0; cursor: pointer; }
+    .cb label { font-size: 13px; color: #222; cursor: pointer; line-height: 1.4; font-weight: 500; }
+    .result { margin: 20px 0; padding: 16px; border-radius: 10px; border-left: 5px solid; font-size: 14px; line-height: 1.6; font-weight: 600; display: none; }
+    .result.show { display: block; animation: fadeIn 0.3s ease; }
+    .result.urgent { background: #fee2e2; border-color: #dc2626; color: #7f1d1d; }
+    .result.maint { background: #dbeafe; border-color: #0f3460; color: #0c4a6e; }
+    .result .rt { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .btn { width: 100%; padding: 13px; background: #0f3460; color: #fff; border: none; border-radius: 9px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 8px; }
+    .btn:hover { background: #0a1f3a; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .lead { display: none; margin-top: 20px; padding: 18px; border: 1px solid #e2e6ea; border-radius: 10px; background: #f8fafc; }
+    .lead.show { display: block; animation: fadeIn 0.3s ease; }
+    .lead h2 { font-size: 16px; font-weight: 700; color: #0f3460; margin-bottom: 4px; }
+    .lead .sub { font-size: 13px; color: #555; margin-bottom: 14px; }
+    .scot-warn { display: none; margin-top: 6px; padding: 10px; border-radius: 8px; background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; font-size: 12px; font-weight: 600; }
+    .fg.has-err input, .fg.has-err select { border-color: #dc2626 !important; background: #fef8f8; }
+    .fg .ferr { display: none; font-size: 12px; color: #dc2626; margin-top: 4px; font-weight: 500; }
+    .fg.has-err .ferr { display: block; }
+    .iss-err { display: none; font-size: 12px; color: #dc2626; margin-top: 6px; font-weight: 500; }
+    .iss-err.show { display: block; }
+    .cond { display: none; } .cond.show { display: block; }
+    .status { margin-top: 8px; font-size: 13px; font-weight: 600; }
+    .status.ok { color: #16a34a; }
+    .status.err { color: #dc2626; }
+    .consent { font-size: 11px; color: #888; line-height: 1.5; margin-top: 8px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #0f3460; cursor: pointer; margin-bottom: 14px; transition: all .2s; }
+    .back-btn:hover { background: #f1f5f9; border-color: #0f3460; }
+    .toast { position: fixed; top: 16px; right: 16px; background: #0f3460; color: #fff; padding: 13px 18px; border-radius: 10px; font-size: 14px; font-weight: 500; z-index: 999; box-shadow: 0 4px 14px rgba(0,0,0,0.25); animation: slideIn 0.3s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes slideIn { from{transform:translateX(300px);opacity:0} to{transform:translateX(0);opacity:1} }
+    @keyframes slideOut { from{transform:translateX(0);opacity:1} to{transform:translateX(300px);opacity:0} }
+    @media(max-width:480px){ .card{padding:22px} .hdr h1{font-size:19px} }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="hdr">
+    <h1>Home Insulation &amp; Mortgage Health Check</h1>
+    <p>Assess your property's insulation and mortgage readiness in 60 seconds</p>
+  </div>
+
+  <!-- Health Check Questions -->
+  <div class="fg">
+    <label for="hc-age">Property Age</label>
+    <select id="hc-age"><option value="">Select property age...</option><option value="pre-1900">Pre-1900</option><option value="1900-1950">1900-1950</option><option value="1950-1990">1950-1990</option><option value="post-1990">Post-1990</option></select>
+  </div>
+  <div class="fg">
+    <div class="cb"><input type="checkbox" id="hc-foam"><label for="hc-foam">Is spray foam present in the loft?</label></div>
+  </div>
+  <div class="fg">
+    <div class="cb"><input type="checkbox" id="hc-remort"><label for="hc-remort">Are you planning to sell or remortgage soon?</label></div>
+  </div>
+  <div class="result" id="hcResult"><span class="rt" id="hcRT"></span><span id="hcTxt"></span></div>
+  <button class="btn" id="hcCta">Request Professional Technical Report</button>
+
+  <!-- Exhaustive Lead Capture -->
+  <div class="lead" id="leadBox">
+    <button type="button" class="back-btn" id="backToQuiz">&larr; Back to Health Check</button>
+    <h2>Get Your Free Spray Foam Assessment</h2>
+    <p class="sub">Complete the form below so our specialist team can assess your situation. <b>Service area: England, Wales &amp; Northern Ireland only.</b></p>
+    <form id="leadForm" novalidate>
+      <div class="fg" data-f="name"><label for="lf-name">Full name *</label><input type="text" id="lf-name" autocomplete="name" required><div class="ferr">Please enter your full name.</div></div>
+      <div class="fg" data-f="phone"><label for="lf-phone">Phone number (UK only) *</label><input type="tel" id="lf-phone" autocomplete="tel" inputmode="tel" required placeholder="e.g. 07700 900000"><div class="ferr">Please enter a valid UK phone number starting with 0 or +44 (10–11 digits).</div><div class="scot-warn" id="scotPhoneWarn">This appears to be a Scottish phone number. We only serve England, Wales &amp; Northern Ireland.</div></div>
+      <div class="fg" data-f="email"><label for="lf-email">Email address *</label><input type="email" id="lf-email" autocomplete="email" required placeholder="e.g. name@example.com"><div class="ferr">Please enter a valid email address.</div></div>
+      <div class="fg" data-f="addr"><label for="lf-addr">Street address *</label><input type="text" id="lf-addr" autocomplete="street-address" required placeholder="e.g. 12 High Street"><div class="ferr">Please enter your street address.</div></div>
+      <div class="fg" data-f="pc">
+        <label for="lf-pc">Postcode *</label>
+        <input type="text" id="lf-pc" autocomplete="postal-code" required placeholder="e.g. B1 1BB">
+        <div class="ferr">Please enter a valid UK postcode (e.g. SW1A 1AA).</div>
+        <div class="scot-warn" id="scotWarn">Sorry &mdash; we currently only serve England, Wales &amp; Northern Ireland. Scotland is not covered.</div>
+      </div>
+      <div class="fg" data-f="ptype">
+        <label for="lf-ptype">Property type *</label>
+        <select id="lf-ptype" required><option value="">Select...</option><option value="detached">Detached house</option><option value="semi">Semi-detached house</option><option value="terrace">Terraced house</option><option value="bungalow">Bungalow</option><option value="flat">Flat / Maisonette</option><option value="other">Other</option></select>
+        <div class="ferr">Please select your property type.</div>
+      </div>
+      <div class="fg" data-f="floc">
+        <label for="lf-floc">Where is the spray foam? *</label>
+        <select id="lf-floc" required><option value="">Select...</option><option value="loft_underside">Loft &mdash; underside of roof tiles</option><option value="loft_joists">Loft &mdash; between joists</option><option value="loft_both">Loft &mdash; both underside &amp; joists</option><option value="walls">Cavity walls</option><option value="other">Other / Not sure</option></select>
+        <div class="ferr">Please select where the spray foam is located.</div>
+      </div>
+      <div class="fg" data-f="iyear">
+        <label for="lf-iyear">When was the spray foam installed? *</label>
+        <select id="lf-iyear" required><option value="">Select...</option><option value="less-1">Less than 1 year ago</option><option value="1-3">1&ndash;3 years ago</option><option value="3-5">3&ndash;5 years ago</option><option value="5-10">5&ndash;10 years ago</option><option value="10-plus">More than 10 years ago</option><option value="unsure">Not sure</option></select>
+        <div class="ferr">Please select when the insulation was installed.</div>
+      </div>
+      <div class="fg" data-f="inst">
+        <label for="lf-inst">Who installed it?</label>
+        <select id="lf-inst"><option value="">Select...</option><option value="company_known">A company (I know the name)</option><option value="company_unknown">A company (I don't remember)</option><option value="energy_co">Arranged by energy company / government scheme</option><option value="previous_owner">Previous owner arranged it</option><option value="unsure">Not sure</option></select>
+      </div>
+      <div class="fg cond" id="instNameRow" data-f="instname"><label for="lf-instname">Installer company name</label><input type="text" id="lf-instname" placeholder="e.g. ABC Insulation Ltd"></div>
+      <div class="fg" data-f="surv">
+        <label for="lf-surv">Surveyor inspection done before installation? *</label>
+        <select id="lf-surv" required><option value="">Select...</option><option value="yes">Yes &mdash; a surveyor visited first</option><option value="no">No &mdash; no survey was done</option><option value="unsure">Not sure / Can't remember</option></select>
+        <div class="ferr">Please select whether a survey was done.</div>
+      </div>
+      <div class="fg" data-f="issues">
+        <label style="margin-bottom:8px;">Issues you are experiencing (tick all that apply) *</label>
+        <div class="cb"><input type="checkbox" id="i1" name="iss" value="mortgage_blocked"><label for="i1">Mortgage / remortgage blocked or delayed</label></div>
+        <div class="cb"><input type="checkbox" id="i2" name="iss" value="valuation_reduced"><label for="i2">Property valuation reduced</label></div>
+        <div class="cb"><input type="checkbox" id="i3" name="iss" value="survey_flagged"><label for="i3">Surveyor flagged the spray foam</label></div>
+        <div class="cb"><input type="checkbox" id="i4" name="iss" value="damp"><label for="i4">Damp or condensation problems</label></div>
+        <div class="cb"><input type="checkbox" id="i5" name="iss" value="mould"><label for="i5">Mould growth</label></div>
+        <div class="cb"><input type="checkbox" id="i6" name="iss" value="timber_rot"><label for="i6">Timber rot in roof structure</label></div>
+        <div class="cb"><input type="checkbox" id="i7" name="iss" value="cold_spots"><label for="i7">Cold spots / not warming properly</label></div>
+        <div class="cb"><input type="checkbox" id="i8" name="iss" value="smell"><label for="i8">Musty or chemical smell</label></div>
+        <div class="cb"><input type="checkbox" id="i9" name="iss" value="sale_fallen_through"><label for="i9">Sale fallen through because of spray foam</label></div>
+        <div class="cb"><input type="checkbox" id="i10" name="iss" value="none_yet"><label for="i10">No issues yet &mdash; want proactive check</label></div>
+        <div class="iss-err" id="issErr">Please select at least one issue you are experiencing.</div>
+      </div>
+      <div class="fg" data-f="own">
+        <label for="lf-own">Ownership status *</label>
+        <select id="lf-own" required><option value="">Select...</option><option value="owner_occupier">Owner-occupier (I live here)</option><option value="landlord">Landlord (I rent it out)</option><option value="buyer">Buyer (trying to purchase)</option><option value="tenant">Tenant (I rent and live here)</option></select>
+        <div class="ferr">Please select your ownership status.</div>
+      </div>
+      <div class="fg" data-f="urg">
+        <label for="lf-urg">How urgent is this for you?</label>
+        <select id="lf-urg"><option value="">Select...</option><option value="urgent_sale">Urgent &mdash; sale or remortgage in progress</option><option value="soon">Soon &mdash; planning in next 6 months</option><option value="concerned">Not urgent &mdash; just concerned about the foam</option><option value="info">Just gathering information</option></select>
+      </div>
+      <div class="fg" data-f="contact">
+        <label for="lf-contact">Preferred contact method</label>
+        <select id="lf-contact"><option value="">Select...</option><option value="phone">Phone call</option><option value="email">Email</option><option value="either">No preference</option></select>
+      </div>
+      <div class="fg" data-f="src">
+        <label for="lf-src">How did you hear about us?</label>
+        <select id="lf-src"><option value="">Select...</option><option value="facebook">Facebook</option><option value="instagram">Instagram</option><option value="google">Google search</option><option value="friend">Friend or family</option><option value="leaflet">Leaflet / letter</option><option value="news">News article</option><option value="other">Other</option></select>
+      </div>
+      <div class="consent">By submitting you agree to be contacted about your spray foam assessment. We serve England, Wales &amp; Northern Ireland only. Your data is handled securely and not shared with third parties without consent.</div>
+      <button type="submit" class="btn" id="leadBtn">Submit &mdash; Get My Free Assessment</button>
+      <div class="status" id="leadSt"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  var WEBHOOK='';
+  var SCOT=['AB','DD','DG','EH','FK','G','HS','IV','KA','KW','KY','ML','PA','PH','TD','ZE'];
+  function isScot(p){var v=(p||'').trim().toUpperCase().replace(/\s+/g,'');if(!v)return false;return SCOT.indexOf(v.slice(0,2))>=0||SCOT.indexOf(v.slice(0,1))>=0;}
+  var SCOT_PHONES=['0131','0141','01224','01241','01250','01259','01261','01290','01292','01294','01301','01307','01309','01320','01324','01330','01333','01334','01337','01340','01343','01346','01349','01350','01355','01356','01357','01358','01360','01361','01368','01369','01381','01382','01383','01387','01389','01397','01408','01431','01436','01445','01450','01456','01461','01463','01464','01465','01466','01467','01470','01471','01475','01478','01479','01496','01499','01505','01506','01520','01528','01540','01542','01546','01549','01555','01556','01557','01560','01561','01563','01567','01569','01571','01573','01575','01576','01577','01578','01581','01583','01586','01592','01593','01599','01620','01631','01641','01644','01651','01655','01659','01667','01671','01674','01680','01681','01683','01687','01688','01698','01700','01721','01738','01750','01764','01770','01771','01776','01779','01786','01796','01806','01807','01808','01809','01828','01835','01838','01848','01852','01854','01855','01856','01857','01859','01862','01863','01864','01866','01871','01875','01876','01877','01878','01879','01880','01882','01887','01888','01896','01899','01950','01951','01957','01967','01968','01971','01972','01988','01997','013398','013399','013873','018478','018479','018518','018519','018908','018909','019758','019759','0159575','0159576'];
+  function isScotPhone(p){var v=(p||'').replace(/[\s\-\(\)\+]/g,'');if(v.indexOf('44')===0)v='0'+v.slice(2);if(v.charAt(0)!=='0')return false;for(var i=0;i<SCOT_PHONES.length;i++){if(v.indexOf(SCOT_PHONES[i])===0)return true}return false}
+  function $(id){return document.getElementById(id);}
+  function val(id){var e=$(id);return e?(e.value||'').trim():'';}
+  function sel(id){var e=$(id);return e?e.value:'';}
+  var reEmail=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var rePhone=/^(?:(?:\+44\s?|0)(?:\d[\s-]?){9,10})$/;
+  var rePC=/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
+
+  function fErr(fg,show){if(!fg)return;if(show)fg.classList.add('has-err');else fg.classList.remove('has-err');}
+  function fgOf(id){var e=$(id);return e?e.closest('.fg'):null;}
+
+  /* Clear field error on user interaction */
+  document.querySelectorAll('#leadForm input, #leadForm select').forEach(function(el){
+    var ev=el.tagName==='SELECT'?'change':'input';
+    el.addEventListener(ev,function(){fErr(el.closest('.fg'),false);$('leadSt').textContent='';});
+  });
+  document.querySelectorAll('#leadForm input[name="iss"]').forEach(function(cb){
+    cb.addEventListener('change',function(){$('issErr').classList.remove('show');});
+  });
+
+  var risk='none';
+  function upd(){
+    var foam=$('hc-foam').checked,rem=$('hc-remort').checked,age=!!$('hc-age').value;
+    var r=$('hcResult');r.classList.remove('show','urgent','maint');
+    if(foam&&rem){risk='urgent';r.classList.add('show','urgent');$('hcRT').textContent='PROPERTY AT RISK';$('hcTxt').textContent='Lenders are blocking mortgages on spray foam properties. Without urgent specialist assessment, you could face major financial losses, removal costs of \u00A33,000\u2013\u00A315,000+, and inability to sell or refinance.';}
+    else if(foam||rem||age){risk='maintenance';r.classList.add('show','maint');$('hcRT').textContent='PROFESSIONAL ASSESSMENT RECOMMENDED';$('hcTxt').textContent='Get expert verification to protect your property value and ensure compliance with current RICS standards before any transactions.';}
+    else{risk='none';}
+  }
+  $('hc-foam').onchange=$('hc-remort').onchange=$('hc-age').onchange=upd;
+
+  var pc=$('lf-pc'),sw=$('scotWarn');
+  pc.addEventListener('input',function(){sw.style.display=isScot(pc.value)?'block':'none';});
+  var ph=$('lf-phone'),spw=$('scotPhoneWarn');
+  ph.addEventListener('input',function(){spw.style.display=isScotPhone(ph.value)?'block':'none';});
+
+  /* Show/hide installer name when "company_known" selected */
+  $('lf-inst').addEventListener('change',function(){$('instNameRow').classList.toggle('show',this.value==='company_known');});
+
+  $('hcCta').onclick=function(){$('leadBox').classList.add('show');$('leadBox').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(function(){$('lf-name').focus();},300);};
+  $('backToQuiz').onclick=function(){$('leadBox').classList.remove('show');$('hcResult').scrollIntoView({behavior:'smooth',block:'center'});};
+
+  function setSt(m,k){var s=$('leadSt');s.textContent=m||'';s.className='status'+(k==='ok'?' ok':k==='err'?' err':'');}
+
+  $('leadForm').onsubmit=async function(e){
+    e.preventDefault();
+    /* Clear previous errors */
+    document.querySelectorAll('#leadForm .fg').forEach(function(g){g.classList.remove('has-err');});
+    $('issErr').classList.remove('show');setSt('');
+
+    var name=val('lf-name'),phone=val('lf-phone'),email=val('lf-email'),addr=val('lf-addr'),postcode=val('lf-pc');
+    var ptype=sel('lf-ptype'),floc=sel('lf-floc'),iyear=sel('lf-iyear'),inst=sel('lf-inst'),instname=val('lf-instname'),surv=sel('lf-surv'),own=sel('lf-own'),urg=sel('lf-urg'),contact=sel('lf-contact'),src=sel('lf-src');
+    var iss=[];document.querySelectorAll('#leadForm input[name="iss"]:checked').forEach(function(c){iss.push(c.value);});
+
+    /* Per-field validation */
+    var errs=[],first=null;
+    function markErr(id){var g=fgOf(id);fErr(g,true);errs.push(id);if(!first)first=g;}
+    if(!name)markErr('lf-name');
+    if(!phone||!rePhone.test(phone.replace(/[\s-]/g,''))||isScotPhone(phone))markErr('lf-phone');
+    if(!email||!reEmail.test(email))markErr('lf-email');
+    if(!addr)markErr('lf-addr');
+    if(!postcode||!rePC.test(postcode))markErr('lf-pc');
+    if(!ptype)markErr('lf-ptype');
+    if(!floc)markErr('lf-floc');
+    if(!iyear)markErr('lf-iyear');
+    if(!surv)markErr('lf-surv');
+    if(!iss.length){$('issErr').classList.add('show');errs.push('iss');if(!first)first=document.querySelector('[data-f="issues"]');}
+    if(!own)markErr('lf-own');
+
+    if(errs.length){
+      setSt('Please fix the '+errs.length+' highlighted field'+(errs.length>1?'s':'')+' above.','err');
+      if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    if(isScot(postcode)){fErr(fgOf('lf-pc'),true);setSt('Sorry \u2014 we only serve England, Wales & Northern Ireland.','err');fgOf('lf-pc').scrollIntoView({behavior:'smooth',block:'center'});return;}
+
+    setSt('Submitting...');$('leadBtn').disabled=true;
+
+    var payload={
+      source:'canva_health_check',submitted_at:new Date().toISOString(),
+      full_name:name,phone:phone,email:email,address:addr,postcode:postcode,
+      property_type:ptype,foam_location:floc,install_year:iyear,installer:inst,installer_name:instname,
+      surveyor_pre_check:surv,issues:iss,ownership:own,urgency:urg,
+      preferred_contact:contact,referral_source:src,
+      property_age:sel('hc-age'),spray_foam_present:$('hc-foam').checked,
+      planning_remortgage_sell:$('hc-remort').checked,risk_level:risk,
+      referrer:document.referrer||''
+    };
+
+    try{
+      if(WEBHOOK){var r=await fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!r.ok)throw new Error(r.status);}
+      else{console.log('[Lead]',payload);}
+      setSt('Thanks! Our specialist team will contact you shortly.','ok');
+      $('leadForm').reset();sw.style.display='none';$('instNameRow').classList.remove('show');
+      toast('\u2713 Details received. A specialist will be in touch.');
+    }catch(er){console.error(er);setSt('Submission failed \u2014 please check your connection and try again.','err');}
+    finally{$('leadBtn').disabled=false;}
+  };
+
+  function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.style.animation='slideOut 0.3s ease forwards';setTimeout(function(){t.remove();},300);},3000);}
+})();
+</script>
+</body>
+</html>

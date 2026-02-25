@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice — INV-2026-0025</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Arial,sans-serif}
+    body{background:#f1f5f9;padding:40px 20px}
+    .inv{max-width:800px;margin:0 auto;background:#fff;border-radius:8px;box-shadow:0 2px 20px rgba(0,0,0,.08);overflow:hidden}
+    .top{background:#1B2A4A;color:#fff;padding:36px 40px;display:flex;justify-content:space-between;align-items:flex-start}
+    .top h1{font-size:28px;font-weight:800;letter-spacing:-.5px}
+    .top .inv-num{text-align:right}
+    .top .inv-num p{font-size:13px;opacity:.7;margin-bottom:2px}
+    .top .inv-num strong{font-size:15px}
+    .body{padding:36px 40px}
+    .parties{display:flex;justify-content:space-between;margin-bottom:32px;gap:40px}
+    .party{flex:1}
+    .party h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:8px;font-weight:700}
+    .party p{font-size:14px;color:#334155;line-height:1.7}
+    .party strong{color:#1B2A4A;font-weight:700}
+    .meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px;padding:16px 20px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0}
+    .meta div{text-align:center}
+    .meta .ml{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;font-weight:700}
+    .meta .mv{font-size:15px;font-weight:700;color:#1B2A4A;margin-top:4px}
+    table{width:100%;border-collapse:collapse;margin-bottom:24px}
+    thead th{background:#f8fafc;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;padding:12px 16px;text-align:left;border-bottom:2px solid #e2e8f0}
+    thead th:last-child,thead th:nth-child(3),thead th:nth-child(4){text-align:right}
+    tbody td{padding:14px 16px;font-size:14px;color:#334155;border-bottom:1px solid #f1f5f9;vertical-align:top}
+    tbody td:last-child,tbody td:nth-child(3),tbody td:nth-child(4){text-align:right;font-variant-numeric:tabular-nums}
+    tbody td:first-child strong{color:#1B2A4A;display:block;margin-bottom:2px}
+    tbody td:first-child span{font-size:12px;color:#94a3b8}
+    tbody tr:hover{background:#fafbfd}
+    .totals{display:flex;justify-content:flex-end;margin-bottom:32px}
+    .totals table{width:320px;margin-bottom:0}
+    .totals td{padding:8px 16px;font-size:14px;border:none}
+    .totals td:first-child{color:#64748b;font-weight:500}
+    .totals td:last-child{text-align:right;font-weight:600;color:#334155;font-variant-numeric:tabular-nums}
+    .totals tr.grand td{padding-top:12px;border-top:2px solid #1B2A4A;font-size:18px;font-weight:800;color:#1B2A4A}
+    .notes{padding:20px 24px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0;margin-bottom:24px}
+    .notes h4{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#16a34a;font-weight:700;margin-bottom:6px}
+    .notes p{font-size:13px;color:#334155;line-height:1.6}
+    .terms{padding:20px 24px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;margin-bottom:24px}
+    .terms h4{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;margin-bottom:6px}
+    .terms p,.terms ul{font-size:12px;color:#64748b;line-height:1.6}
+    .terms ul{padding-left:18px;margin-top:4px}
+    .footer{text-align:center;padding:24px 40px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8}
+    @media print{
+      body{background:#fff;padding:0}
+      .inv{box-shadow:none;border-radius:0}
+      .top{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+    @media(max-width:600px){
+      .parties{flex-direction:column;gap:20px}
+      .meta{grid-template-columns:1fr}
+      .top{flex-direction:column;gap:16px}
+      .body{padding:24px 20px}
+    }
+  </style>
+</head>
+<body>
+<div class="inv">
+  <div class="top">
+    <div>
+      <h1>INVOICE</h1>
+    </div>
+    <div class="inv-num">
+      <p>Invoice Number</p>
+      <strong>INV-2026-0025</strong>
+      <br>
+      <p style="margin-top:8px">Date Issued</p>
+      <strong>25 February 2026</strong>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="parties">
+      <div class="party">
+        <h3>From</h3>
+        <p>
+          <strong>[Your Company Name]</strong><br>
+          [Your Address Line 1]<br>
+          [City, Postcode]<br>
+          [Country]<br><br>
+          Email: [your@email.com]<br>
+          Phone: [your phone]<br>
+          VAT: [your VAT number]
+        </p>
+      </div>
+      <div class="party">
+        <h3>Bill To</h3>
+        <p>
+          <strong>Carter Langfold</strong><br>
+          Midlands Building Specialists<br>
+          [Company Address]<br>
+          Birmingham, West Midlands<br>
+          England, United Kingdom<br><br>
+          Email: info@carterlangfold.com<br>
+          Phone: 0121 820 8966<br>
+          Web: www.carterlangfold.com
+        </p>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div><div class="ml">Invoice Date</div><div class="mv">25 Feb 2026</div></div>
+      <div><div class="ml">Due Date</div><div class="mv">11 Mar 2026</div></div>
+      <div><div class="ml">Project Ref</div><div class="mv">CL-INSULATION-2026</div></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:45%">Description</th>
+          <th style="width:15%">Qty</th>
+          <th style="width:20%">Unit Price</th>
+          <th style="width:20%">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>Campaign Strategy &amp; Architecture</strong>
+            <span>Lead generation strategy, campaign architecture, content angles, audience targeting plan for insulation claims campaign (England, Wales &amp; NI)</span>
+          </td>
+          <td>1</td>
+          <td>&pound;750.00</td>
+          <td>&pound;750.00</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Interactive Lead Capture Widgets (x5)</strong>
+            <span>canvablog1–5: Health Check, Claim Checker, Damp Assessment, Scheme Eligibility Checker, Property Value Calculator. Self-contained HTML, exhaustive forms, Scotland postcode blocking, per-field validation, webhook integration</span>
+          </td>
+          <td>5</td>
+          <td>&pound;350.00</td>
+          <td>&pound;1,750.00</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Landing Page Development</strong>
+            <span>Insulation claims landing page with multi-step form, RICS compliance messaging, urgency triggers, mobile-responsive design, Vercel deployment</span>
+          </td>
+          <td>1</td>
+          <td>&pound;500.00</td>
+          <td>&pound;500.00</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Social Media Content Creation</strong>
+            <span>39 unique posts across Facebook (10), Instagram Feed (10), Instagram Stories (8), Instagram Reels (6), LinkedIn (5) — headlines, captions, CTAs, hashtags, content angles, audience targeting</span>
+          </td>
+          <td>39</td>
+          <td>&pound;25.00</td>
+          <td>&pound;975.00</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Google Sheets Data Orchestration</strong>
+            <span>6 CSV data sheets (Facebook, Instagram Feed, Stories, Reels, LinkedIn, Blog Widgets) structured for Make.com automation with scheduling, status tracking, and referral columns</span>
+          </td>
+          <td>6</td>
+          <td>&pound;75.00</td>
+          <td>&pound;450.00</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Make.com Automation Setup Guide</strong>
+            <span>Exhaustive scenario documentation: 5 Make.com scenarios covering Canva batch generation, social media auto-publishing, webhook lead capture, CRM/email/Slack notifications, daily scheduler. Module-by-module instructions with field mappings</span>
+          </td>
+          <td>1</td>
+          <td>&pound;600.00</td>
+          <td>&pound;600.00</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Canva Template Design Brief</strong>
+            <span>Complete Canva template specifications for 5 formats (FB Feed, IG Feed, IG Story, Display 728x90, Display 300x250) with placeholder mapping, colour codes, typography, layout diagrams</span>
+          </td>
+          <td>1</td>
+          <td>&pound;300.00</td>
+          <td>&pound;300.00</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Demo Dashboard &amp; Campaign Switcher</strong>
+            <span>Internal demo dashboard with campaign selector (Spray Foam + Insulation Claims), preview functionality, webhook testing</span>
+          </td>
+          <td>1</td>
+          <td>&pound;250.00</td>
+          <td>&pound;250.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <table>
+        <tr>
+          <td>Subtotal</td>
+          <td>&pound;5,575.00</td>
+        </tr>
+        <tr>
+          <td>VAT (20%)</td>
+          <td>&pound;1,115.00</td>
+        </tr>
+        <tr class="grand">
+          <td>Total Due</td>
+          <td>&pound;6,690.00</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="notes">
+      <h4>Project Summary</h4>
+      <p>
+        Complete digital lead generation system for insulation claims campaign targeting victims of wrongly installed spray foam and cavity wall insulation across England, Wales &amp; Northern Ireland. Includes 5 interactive assessment widgets, landing page, 39 social media posts, automation orchestration sheets, Make.com scenario documentation, and Canva design briefs. All deliverables are production-ready and deployed.
+      </p>
+    </div>
+
+    <div class="terms">
+      <h4>Payment Terms</h4>
+      <ul>
+        <li>Payment due within <strong>14 days</strong> of invoice date</li>
+        <li>Bank transfer preferred (details below)</li>
+        <li>Late payments subject to statutory interest (8% + Bank of England base rate)</li>
+      </ul>
+      <br>
+      <h4>Bank Details</h4>
+      <p>
+        Account Name: [Your Account Name]<br>
+        Sort Code: [XX-XX-XX]<br>
+        Account Number: [XXXXXXXX]<br>
+        Reference: INV-2026-0025
+      </p>
+      <br>
+      <h4>Deliverables Included</h4>
+      <ul>
+        <li>5x canvablog HTML widgets (canvablog1.html – canvablog5.html)</li>
+        <li>1x insulation claims landing page (landing/insulation-claims/)</li>
+        <li>1x demo dashboard with campaign switcher</li>
+        <li>6x Make.com orchestration CSV sheets</li>
+        <li>1x Make.com Scenario Setup Guide (Make_Scenario_Setup_Guide.md)</li>
+        <li>1x Canva Design Brief (Canva_Design_Brief_Insulation_Campaign.md)</li>
+        <li>1x Canva + Make Automation Instructions (Canva_Make_Automation_Instructions.md)</li>
+        <li>Vercel deployment configuration</li>
+        <li>Full source code via GitHub repository</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Thank you for your business. &mdash; Invoice generated 25 February 2026</p>
+    <p style="margin-top:4px">[Your Company Name] &bull; [Your Registration Number] &bull; [Your VAT Number]</p>
+  </div>
+</div>
+</body>
+</html>
